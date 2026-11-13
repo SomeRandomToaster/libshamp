@@ -28,143 +28,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef QUADRUPED_COMPONENTS_H
 #define QUADRUPED_COMPONENTS_H
 
+#include <shamp/common/common_components.h>
+
 namespace champ
 {
-    class Linear
-    {
-        public:
-            float x;
-            float y;
-            float z;
-            Linear():
-                x(0.0f),
-                y(0.0f),
-                z(0.0f)
-            {}
-    };
 
-    class Angular
-    {
-        public:
-            float x;
-            float y;
-            float z;
-            Angular():
-                x(0.0f),
-                y(0.0f),
-                z(0.0f)
-            {}
-    };
-
-    class Velocities
-    {
-        public:
-            Linear linear;
-            Angular angular;
-    };
-
-    class Quaternion
-    {
-        public:
-            Quaternion():
-                x(0.0f), 
-                y(0.0f), 
-                z(0.0f),
-                w(0.0f)
-            {}
-            float x;
-            float y;
-            float z;
-            float w;
-    };
-
-    class Point
-    {
-        public:
-            float x;
-            float y;
-            float z;
-            Point():
-                x(0.0f),
-                y(0.0f),
-                z(0.0f)
-            {}
-    };
-
-    class Euler
-    {
-        public:
-            Euler():
-                roll(0.0f), 
-                pitch(0.0f), 
-                yaw(0.0f)
-            {}
-            float roll;
-            float pitch;
-            float yaw;
-    };
-
-    class Pose
-    {
-        public:
-            Point position;
-            Euler orientation;
-    };
-
-    class Accelerometer
-    {
-        public:
-            Accelerometer():
-                x(0.0f), 
-                y(0.0f), 
-                z(0.0f)
-            {}
-            float x;
-            float y;
-            float z;
-    };
-
-    class Gyroscope
-    {
-        public:
-            Gyroscope():
-                x(0.0f), 
-                y(0.0f), 
-                z(0.0f)
-            {}
-            float x;
-            float y;
-            float z;
-    };
-
-    class Magnetometer
-    {
-        public:
-            Magnetometer():
-                x(0.0f), 
-                y(0.0f), 
-                z(0.0f)
-            {}
-            float x;
-            float y;
-            float z;
-    };
-
-    class GaitConfig
+    class GaitConfig : public GaitConfigBase
     {
         public:
             GaitConfig():
                 knee_orientation(">>"),
                 pantograph_leg(false),
-                odom_scaler(0.0f),
-                max_linear_velocity_x(0.0f),
-                max_linear_velocity_y(0.0f),
-                max_angular_velocity_z(0.0f),
-                com_x_translation(0.0f),
-                swing_height(0.0f),
-                stance_depth(0.0f),
-                stance_duration(0.0f),
-                nominal_height(0.0f)
+                GaitConfigBase()
             {}
             GaitConfig(const char * knee_or,
                 bool panto_leg,
@@ -179,27 +54,20 @@ namespace champ
                 float nom_height):
                     knee_orientation(knee_or),
                     pantograph_leg(panto_leg),
-                    odom_scaler(odom_scaler_val),
-                    max_linear_velocity_x(max_l_x),
-                    max_linear_velocity_y(max_l_y),
-                    max_angular_velocity_z(max_a_z),
-                    com_x_translation(com_x_trans),
-                    swing_height(swing_h),
-                    stance_depth(stan_dep),
-                    stance_duration(stan_dur),
-                    nominal_height(nom_height)
+                    GaitConfigBase(
+                        odom_scaler_val,
+                        max_l_x,
+                        max_l_y,
+                        max_a_z,
+                        com_x_trans,
+                        swing_h,
+                        stan_dep,
+                        stan_dur,
+                        nom_height
+                    )
             {}
             const char * knee_orientation;
             bool pantograph_leg;
-            float odom_scaler;
-            float max_linear_velocity_x;
-            float max_linear_velocity_y;
-            float max_angular_velocity_z;
-            float com_x_translation;
-            float swing_height;
-            float stance_depth;
-            float stance_duration;
-            float nominal_height;
     };
 }
 
