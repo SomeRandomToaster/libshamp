@@ -1,4 +1,4 @@
-#ifndef ARTHROPOD_COMPOMENTS_H
+#ifndef ARTHROPOD_COMPONENTS_H
 #define ARTHROPOD_COMPONENTS_H
 
 #include "shamp/common/common_components.h"
