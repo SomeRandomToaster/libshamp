@@ -100,32 +100,32 @@ namespace champ
                 rotation_.yaw = yaw;
             }
 
-            const float x() const
+            float x() const
             {
                 return translation_.x;
             }
 
-            const float y() const
+            float y() const
             {
                 return translation_.y;
             }
 
-            const float z() const
+            float z() const
             {
                 return translation_.z;
             }
 
-            const float roll() const
+            float roll() const
             {
                 return rotation_.roll;
             }
 
-            const float pitch() const
+            float pitch() const
             {
                 return rotation_.pitch;
             }
 
-            const float yaw() const
+            float yaw() const
             {
                 return rotation_.yaw;
             }
