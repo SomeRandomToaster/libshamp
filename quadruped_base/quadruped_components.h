@@ -37,9 +37,9 @@ namespace champ
     {
         public:
             GaitConfig():
+                GaitConfigBase(),
                 knee_orientation(">>"),
-                pantograph_leg(false),
-                GaitConfigBase()
+                pantograph_leg(false)
             {}
             GaitConfig(const char * knee_or,
                 bool panto_leg,
@@ -52,8 +52,6 @@ namespace champ
                 float stan_dep,
                 float stan_dur,
                 float nom_height):
-                    knee_orientation(knee_or),
-                    pantograph_leg(panto_leg),
                     GaitConfigBase(
                         odom_scaler_val,
                         max_l_x,
@@ -64,7 +62,9 @@ namespace champ
                         stan_dep,
                         stan_dur,
                         nom_height
-                    )
+                    ),
+                    knee_orientation(knee_or),
+                    pantograph_leg(panto_leg)
             {}
             const char * knee_orientation;
             bool pantograph_leg;
