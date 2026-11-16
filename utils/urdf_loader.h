@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <urdf/model.h>
 // #include <utils/xmlrpc_helpers.h>
 
+#include <arthropod_base/arthropod_base.h>
 #include <quadruped_base/quadruped_base.h>
 #include <quadruped_base/quadruped_leg.h>
 #include <quadruped_base/quadruped_joint.h>
@@ -54,6 +55,7 @@ namespace champ
               
                 current_parent_name = current_link->getParent()->name;
                 prev_link = model.getLink(current_parent_name);
+
                 pose->position.x += current_pose.position.x;
                 pose->position.y += current_pose.position.y;
                 pose->position.z += current_pose.position.z;
@@ -190,6 +192,94 @@ namespace champ
             }
 
             return links_names;
+        }
+    }
+}
+
+namespace shamp
+{
+    namespace URDF
+    {
+        void getPose(urdf::Pose *pose, std::string ref_link, std::string end_link, urdf::Model &model)
+        {
+            urdf::LinkConstSharedPtr ref_link_ptr = model.getLink(ref_link);
+
+            std::string current_parent_name = end_link;
+            urdf::LinkConstSharedPtr prev_link = model.getLink(current_parent_name);
+            
+            urdf::LinkConstSharedPtr current_link = model.getLink(current_parent_name);
+            urdf::Pose current_pose = current_link->parent_joint->parent_to_joint_origin_transform;
+              
+            current_parent_name = current_link->getParent()->name;
+            prev_link = model.getLink(current_parent_name);
+
+            *pose = current_pose;
+        }
+
+        void fillLeg(shamp::ArthropodLeg& leg, const rclcpp::node_interfaces::NodeParametersInterface::SharedPtr nh, urdf::Model &model, std::string links_map_name, std::string base_link_name)
+        {
+            rclcpp::Parameter links_map_param("links_map_param", std::vector<std::string> ({}));
+            auto success = nh->get_parameter(links_map_name, links_map_param);
+            if (!success){
+                RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "No links map was provided for %s", links_map_name.c_str());
+                throw std::runtime_error("A links map is missing");
+            }
+            std::vector<std::string> links_map = links_map_param.as_string_array();
+
+            if (links_map.size() != leg.joint_chain.size()) {
+                throw std::runtime_error("Links map size is incorrect");
+            }
+
+            for (size_t i = 0; i < leg.joint_chain.size(); i++) {
+                std::string ref_link, end_link;
+
+                if (i > 0) {
+                    ref_link = links_map[i - 1];
+                } else {
+                    ref_link = base_link_name;
+                }
+                end_link = links_map[i];
+
+                urdf::Pose pose;
+                shamp::URDF::getPose(&pose, ref_link, end_link, model);
+                double r, p, y;
+                pose.rotation.getRPY(r, p, y);
+                
+                leg.joint_chain[i]->setOrigin(pose.position.x, pose.position.y, pose.position.z, r, p, y);
+            }
+        }
+
+        void loadFromString(shamp::ArthropodBase &base, const rclcpp::node_interfaces::NodeParametersInterface::SharedPtr nh, const std::string& urdf_string)
+        {
+            urdf::Model model;
+            // TODO fix temp path
+            if (!model.initString(urdf_string)){
+                throw std::runtime_error("Failed to parse urdf string");
+            }
+            RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Successfully parsed urdf file");
+
+            rclcpp::Parameter base_link_param("base_link", std::string());
+            auto success = nh->get_parameter("links_map.base_link", base_link_param);
+            if (!success){
+                throw std::runtime_error("No links_map.base_link parameter was provided");
+            }
+            std::string base_link_name = base_link_param.as_string();
+
+            rclcpp::Parameter leg_names_param("leg_names", std::vector<std::string> ({}));
+            success = nh->get_parameter("links_map.leg_names", leg_names_param);
+            if (!success){
+                throw std::runtime_error("No links_map.leg_names parameter was provided");
+            }
+            std::vector<std::string> leg_names = leg_names_param.as_string_array();
+
+            if (base.legs.size() != leg_names.size()) {
+                throw std::runtime_error("Leg count in n_links and links_map doesn't match!");
+            }
+
+            for (size_t i = 0; i < base.legs.size(); i++) {
+                std::string param_name = "links_map." + leg_names[i];
+                fillLeg(base.legs[i], nh, model, param_name, base_link_name);
+            }
         }
     }
 }
