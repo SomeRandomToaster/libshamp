@@ -4,6 +4,8 @@
 #include "shamp/arthropod_base/arthropod_components.h"
 #include "shamp/common/joint.h"
 
+#include <vector>
+
 namespace shamp
 {
     class ArthropodLeg
@@ -13,11 +15,10 @@ namespace shamp
         ArthropodLeg():
             id_(0)
         {
-            int no_of_joints = 0;
-            joint_chain[no_of_joints++] = &coxa;
-            joint_chain[no_of_joints++] = &tibia;
-            joint_chain[no_of_joints++] = &femur;
-            joint_chain[no_of_joints++] = &endpoint;
+            joint_chain.push_back(&coxa);
+            joint_chain.push_back(&tibia);
+            joint_chain.push_back(&femur);
+            joint_chain.push_back(&endpoint);
         }
 
         void setGaitConfig(shamp::ArthropodGaitConfig *gait_conf)
@@ -37,7 +38,7 @@ namespace shamp
 
         shamp::ArthropodGaitConfig *gait_config;
 
-        champ::Joint *joint_chain[4];
+        std::vector<champ::Joint *> joint_chain;
     };
 }
 
