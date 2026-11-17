@@ -18,20 +18,20 @@ namespace shamp
             setGaitConfig(gait_config);
         }
 
-        void setGaitConfig(shamp::ArthropodGaitConfig &gait_conf)
+        void setGaitConfig(shamp::ArthropodGaitConfig *gait_conf)
         {
             gait_config = gait_conf;
 
             for(unsigned i = 0; i < legs.size(); i++)
             {
                 legs[i].id(i);
-                legs[i].setGaitConfig(&gait_config);
+                legs[i].setGaitConfig(gait_config);
             }
         }
 
         std::vector<shamp::ArthropodLeg> legs;
 
-        shamp::ArthropodGaitConfig gait_config;
+        shamp::ArthropodGaitConfig *gait_config;
     };
 }
 
