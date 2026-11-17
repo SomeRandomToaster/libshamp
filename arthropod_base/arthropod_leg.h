@@ -1,8 +1,9 @@
 #ifndef ARTHROPOD_LEG_H
 #define ARTHROPOD_LEG_H
 
-#include "shamp/arthropod_base/arthropod_components.h"
-#include "shamp/common/joint.h"
+#include "arthropod_base/arthropod_components.h"
+#include "common/joint.h"
+#include "geometry/geometry.h"
 
 #include <vector>
 
@@ -24,6 +25,21 @@ namespace shamp
         void setGaitConfig(shamp::ArthropodGaitConfig *gait_conf)
         {
             gait_config = gait_conf;
+        }
+
+        geometry::Transformation zero_stance()
+        {
+            geometry::Transformation zero_stance;
+
+            float base_radius = sqrtf(coxa.x() * coxa.x() + coxa.y() * coxa.y());
+            float norm_x = coxa.x() / base_radius;
+            float norm_y = coxa.y() / base_radius;
+
+            zero_stance.X() = norm_x * gait_config->stance_radius + gait_config->com_x_translation;
+            zero_stance.Y() = norm_y * gait_config->stance_radius;
+            zero_stance.Z() = coxa.z();
+                
+            return zero_stance;
         }
 
         void id(unsigned id)
