@@ -11,7 +11,8 @@ namespace shamp
     public:
         ArthropodGaitConfig():
             GaitConfigBase(),
-            stance_radius(0)
+            stance_radius(0),
+            swing_duration(0)
         {}
         ArthropodGaitConfig(
             float odom_scaler_val,
@@ -20,6 +21,7 @@ namespace shamp
             float max_a_z,
             float com_x_trans,
             float swing_h,
+            float swing_dur,
             float stan_dep,
             float stan_dur,
             float nom_height,
@@ -35,9 +37,11 @@ namespace shamp
                     stan_dur,
                     nom_height
                 ),
-                stance_radius(stan_radius)
+                stance_radius(stan_radius),
+                swing_duration(swing_dur)
         {}
         float stance_radius;
+        float swing_duration;
     };
 }
 

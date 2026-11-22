@@ -18,7 +18,7 @@ namespace shamp
             setGaitConfig(gait_config);
         }
 
-        void setGaitConfig(shamp::ArthropodGaitConfig *gait_conf)
+        void setGaitConfig(ArthropodGaitConfig *gait_conf)
         {
             gait_config = gait_conf;
 

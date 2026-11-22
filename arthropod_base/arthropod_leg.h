@@ -12,9 +12,11 @@ namespace shamp
     class ArthropodLeg
     {
         unsigned id_;
+        bool gait_phase_;
     public:
         ArthropodLeg():
-            id_(0)
+            id_(0),
+            gait_phase_(1)
         {
             joint_chain.push_back(&coxa);
             joint_chain.push_back(&tibia);
@@ -45,6 +47,11 @@ namespace shamp
         void id(unsigned id)
         {
             id_ = id;
+        }
+
+        void gait_phase(bool phase)
+        {
+            gait_phase_ =  phase;
         }
 
         champ::Joint coxa;
