@@ -67,6 +67,9 @@ namespace shamp
             float ik_gamma = atan(tmp_position.Z() / tmp_position.X());
             float tibia_angle = M_PI_2 - (ik_beta + ik_gamma);
 
+            if (tibia_angle > M_PI) {
+                tibia_angle = M_PI_2 - (ik_gamma - ik_beta);
+            }
             joint_positions[first_idx] = coxa_angle;
             joint_positions[first_idx + 1] = tibia_angle;
             joint_positions[first_idx + 2] = femur_angle;
